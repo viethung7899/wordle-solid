@@ -1,4 +1,5 @@
-import { createRoot, createSignal } from "solid-js";
+import { createRoot } from "solid-js";
+import createLocalStorageSignal from "./createLocalStorageSignal";
 
 const LETTERS = 5;
 const WORDS = 6;
@@ -31,13 +32,13 @@ const generateWords = () => {
 
 const generateAnswer = (word: Box[], correctWord: string) => {
   // Match the correct spot
-  let result = word.map<Box>(box => ({...box, state: "NOT_FOUND"}));
+  let result = word.map<Box>(box => ({ ...box, state: "NOT_FOUND" }));
   // Match the character with incorrect spot
   let map = {}
   for (let i = 0; i < correctWord.length; i++) {
     const correctLetter = correctWord[i];
     if (correctLetter === result[i].letter)
-      result[i] = {letter: correctLetter, state: "CORRECT_SPOT"};
+      result[i] = { letter: correctLetter, state: "CORRECT_SPOT" };
     else {
       if (map[correctLetter] === undefined) map[correctLetter] = 0;
       map[correctLetter]++;
@@ -54,10 +55,13 @@ const generateAnswer = (word: Box[], correctWord: string) => {
   return result;
 }
 
+const [isNewPlayer, setNewPlayer] = createLocalStorageSignal("NEW_PLAYER", true);
+export {isNewPlayer, setNewPlayer}
+
 const createGame = () => {
-  const [words, setWords] = createSignal(generateWords());
-  const [wordIndex, setWordIndex] = createSignal(0);
-  const [letterIndex, setLetterIndex] = createSignal(0);
+  const [words, setWords] = createLocalStorageSignal("WORDS", generateWords());
+  const [wordIndex, setWordIndex] = createLocalStorageSignal("WORD_INDEX", 0);
+  const [letterIndex, setLetterIndex] = createLocalStorageSignal("LETTER_INDEX", 0);
 
   const addLetter = (letter: string) => {
     const $wordIndex = wordIndex();
@@ -85,7 +89,7 @@ const createGame = () => {
     if ($wordIndex < 0 || $wordIndex >= $words.length) return;
     const $letterIndex = letterIndex() - 1;
     if ($letterIndex < 0 || $letterIndex >= $words[$wordIndex].length) return;
-    
+
     // Remove letter
     setWords((words) => {
       return words.map((word, row) => {
