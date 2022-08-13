@@ -1,26 +1,38 @@
-import { Component, For } from "solid-js";
-import game, { Box } from "../utils/game";
+import { Component, createMemo, For } from "solid-js";
+import game, { Box, WORDS, LETTERS } from "../utils/game";
 
-const LetterInput: Component<{ box: Box }> = ({ box: { letter, state } }) => {
-  let style = "bg-transparent border-2 border-gray-500";
-  if (state === "CORRECT_SPOT") style = "bg-green-600";
-  if (state === "WRONG_SPOT") style = "bg-yellow-600";
-  if (state === "NOT_FOUND") style = "bg-gray-700"
+const AMIMATION_DELAY = 0.2;
+
+const LetterInput: Component<{row: number, col: number}> = ({ row, col }) => {
+  const letter = () => game.words()[row][col].letter;
+  const state = () => game.words()[row][col].state;
+  const style = () => {
+    const $state = state();
+    if ($state === "CORRECT_SPOT") return "correct-spot";
+    if ($state === "WRONG_SPOT") return "wrong-spot";
+    if ($state === "NOT_FOUND") return "not-found";
+    return "none";
+  };
 
   return (
-    <div class={`w-16 h-16 ${style} flex items-center justify-center`}>
-      <span class="text-4xl font-bold">{letter}</span>
+    <div
+      style={{
+        "animation-delay": `${col * AMIMATION_DELAY}s`
+      }} 
+      class={`w-16 h-16 ${style()} flex items-center justify-center`}
+      >
+      <span class="text-4xl font-bold">{letter()}</span>
     </div>
   )
 };
 
 const Wordle = () => {
-  return <For each={game.words()}>
-    {(word) => (
+  return <For each={Array(WORDS).fill(0)}>
+    {(_, row) => (
       <div class="flex mx-auto space-x-1 mb-1 text-white">
-        <For each={word}>
-          {(box) => (
-            <LetterInput box={box} />
+        <For each={Array(LETTERS).fill(0)}>
+          {(_, col) => (
+            <LetterInput row={row()} col={col()} />
           )}
         </For>
       </div>

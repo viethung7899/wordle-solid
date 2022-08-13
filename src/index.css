@@ -1,3 +1,53 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@keyframes flip {
+  0% {
+    transform: rotateX(0);
+    @apply none;
+  }
+
+  45% {
+    transform: rotateX(90deg);
+    @apply none;
+  }
+
+  55% {
+    transform: rotateX(90deg);
+    background-color: var(--background-color);
+    border-color: var(--border-color);
+  }
+
+  100% {
+    transform: rotateX();
+    background-color: var(--background-color);
+    border-color: var(--border-color);
+  }
+}
+
+.tile {
+  animation: flip 0.5s ease forwards;
+}
+
+.none {
+  @apply border-2 border-gray-500;
+}
+
+.correct-spot {
+  @apply tile;
+  --background-color: theme('colors.green.600');
+  --border-color: theme('colors.green.600');
+}
+
+.wrong-spot {
+  @apply tile;
+  --background-color: theme('colors.yellow.600');
+  --border-color: theme('colors.yellow.600');
+}
+
+.not-found {
+  @apply tile;
+  --background-color: theme('colors.gray.700');
+  --border-color: theme('colors.gray.600');
+}

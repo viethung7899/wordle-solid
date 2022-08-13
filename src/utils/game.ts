@@ -1,8 +1,8 @@
 import { createRoot, createSignal } from "solid-js";
 import createLocalStorageSignal from "./createLocalStorageSignal";
 
-const LETTERS = 5;
-const WORDS = 6;
+export const LETTERS = 5;
+export const WORDS = 6;
 
 type _State = "NOT_FOUND" | "WRONG_SPOT" | "CORRECT_SPOT";
 export type State = "UNVAILABLE" | _State;
@@ -79,7 +79,7 @@ const createGame = () => {
       return words.map((word, row) => {
         return word.map((box, col) => {
           if (row != $wordIndex || col != $letterIndex) return box;
-          return { letter } as Box
+          return { letter, state: "UNVAILABLE" } as Box
         })
       })
     });
@@ -98,7 +98,7 @@ const createGame = () => {
       return words.map((word, row) => {
         return word.map((box, col) => {
           if (row != $wordIndex || col != $letterIndex) return box;
-          return { letter: "" } as Box
+          return { letter: "", state: "UNVAILABLE" } as Box
         })
       })
     });
@@ -132,7 +132,6 @@ const createGame = () => {
     // Update letter states
     setLettersStates((prev) => {
       let states = [...prev];
-      console.log("begin...", $word, $word.length);
       for (let i = 0; i < $word.length; i++) {
         const code = getCharCode($word[i]);
         const oldState = states[code];
