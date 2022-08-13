@@ -1,16 +1,12 @@
-## Usage
+# [Wordle-Solid](https://wordle-solid.netlify.app)
 
-Those templates dependencies are maintained via [pnpm](https://pnpm.io) via `pnpm up -Lri`.
+[![Netlify Status](https://api.netlify.com/api/v1/badges/2d8a0c89-5190-4e17-bf1d-8168c39513fb/deploy-status)](https://app.netlify.com/sites/wordle-solid/deploys)
 
-This is the reason you see a `pnpm-lock.yaml`. That being said, any package manager will work. This file can be safely be removed once you clone a template.
+This is a clone of a popular game [Wordle](https://www.nytimes.com/games/wordle/index.html) built with [Solid](https://www.solidjs.com/) and [TailwindCSS](https://tailwindcss.com/)
 
-```bash
-$ npm install # or pnpm install or yarn install
-```
+Please visit thee website [here](https://wordle-solid.netlify.app)
 
-### Learn more on the [Solid Website](https://solidjs.com) and come chat with us on our [Discord](https://discord.com/invite/solidjs)
-
-## Available Scripts
+## Developers' guide
 
 In the project directory, you can run:
 
@@ -28,7 +24,3 @@ It correctly bundles Solid in production mode and optimizes the build for the be
 
 The build is minified and the filenames include the hashes.<br>
 Your app is ready to be deployed!
-
-## Deployment
-
-You can deploy the `dist` folder to any static host provider (netlify, surge, now, etc.)
