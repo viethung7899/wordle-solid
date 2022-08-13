@@ -1,28 +1,27 @@
-import { createRoot } from "solid-js";
+import { createRoot, createSignal } from "solid-js";
 import createLocalStorageSignal from "./createLocalStorageSignal";
 
 const LETTERS = 5;
 const WORDS = 6;
 
-export type State = "NOT_FOUND" | "WRONG_SPOT" | "CORRECT_SPOT";
+type _State = "NOT_FOUND" | "WRONG_SPOT" | "CORRECT_SPOT";
+export type State = "UNVAILABLE" | _State;
 
-export const getColorFromState = (state?: State) => {
-  if (!state) return "bg-transparent"
-  if (state === "CORRECT_SPOT") return "bg-green-500";
-  if (state === "WRONG_SPOT") return "bg-yellow-500";
-  return "bg-gray-500";
-}
+export const getCharCode = (letter: string) => {
+  return letter.toLowerCase().charCodeAt(0) - "a".charCodeAt(0);
+};
 
 export type Box = {
   letter: string
-  state?: State
+  state: State
 }
 
-const emptyBox = () => ({
-  letter: ""
-} as Box);
+const emptyBox = (): Box => ({
+  letter: "",
+  state: "UNVAILABLE"
+});
 
-const correctWord = "SOLID";
+const correctWord = "solid";
 
 const generateWords = () => {
   return Array(WORDS).fill(0).map(_ => {
@@ -30,38 +29,42 @@ const generateWords = () => {
   })
 };
 
-const generateAnswer = (word: Box[], correctWord: string) => {
+const generateLetterStates = () => {
+  return Array(26).fill(0).map<State>(_ => "UNVAILABLE");
+}
+
+const generateAnswer = (word: string, correctWord: string) => {
   // Match the correct spot
-  let result = word.map<Box>(box => ({ ...box, state: "NOT_FOUND" }));
-  // Match the character with incorrect spot
-  let map = {}
+  let result = word.toLowerCase().split("").map<_State>(_ => "NOT_FOUND");
+  let map = Array(26).fill(0);
+
+  // Match the character with correct spot
   for (let i = 0; i < correctWord.length; i++) {
     const correctLetter = correctWord[i];
-    if (correctLetter === result[i].letter)
-      result[i] = { letter: correctLetter, state: "CORRECT_SPOT" };
-    else {
-      if (map[correctLetter] === undefined) map[correctLetter] = 0;
-      map[correctLetter]++;
-    }
+    if (word[i] === correctLetter) result[i] = "CORRECT_SPOT";
+    else map[getCharCode(correctLetter)]++;
   };
 
+  // Match the wrong spot
   for (let i = 0; i < result.length; i++) {
-    if (result[i].state === "CORRECT_SPOT") continue;
-    if (!!map[result[i].letter] && map[result[i].letter] > 0) {
-      result[i].state = "WRONG_SPOT";
-      map[result[i].letter]--;
+    if (result[i] === "CORRECT_SPOT") continue;
+    if (map[getCharCode(word[i])] > 0) {
+      result[i] = "WRONG_SPOT";
+      map[getCharCode(word[i])]--;
     }
   }
+
   return result;
 }
 
 const [isNewPlayer, setNewPlayer] = createLocalStorageSignal("NEW_PLAYER", true);
-export {isNewPlayer, setNewPlayer}
+export { isNewPlayer, setNewPlayer };
 
 const createGame = () => {
-  const [words, setWords] = createLocalStorageSignal("WORDS", generateWords());
-  const [wordIndex, setWordIndex] = createLocalStorageSignal("WORD_INDEX", 0);
-  const [letterIndex, setLetterIndex] = createLocalStorageSignal("LETTER_INDEX", 0);
+  const [words, setWords] = createSignal(generateWords());
+  const [wordIndex, setWordIndex] = createSignal(0);
+  const [letterIndex, setLetterIndex] = createSignal(0);
+  const [letterStates, setLettersStates] = createSignal(generateLetterStates());
 
   const addLetter = (letter: string) => {
     const $wordIndex = wordIndex();
@@ -108,17 +111,47 @@ const createGame = () => {
     if ($wordIndex < 0 || $wordIndex >= $words.length) return;
     const $letterIndex = letterIndex();
     if ($letterIndex < $words[$wordIndex].length) return;
-    setWords((words) => {
-      return words.map((word, row) => {
-        if (row == $wordIndex) return generateAnswer(word, correctWord);
-        return word;
-      })
-    })
+
+    // Pull out the word
+    const $word = $words[$wordIndex].map(b => b.letter.toLowerCase()).join("");
+    console.log($word);
+
+    // Generate answer
+    const response = generateAnswer($word, correctWord);
+
+    // Update boxes
+    setWords((words) => words.map((word, row) => {
+      if (row !== $wordIndex) return word;
+      return word.map((box, index) => ({
+        ...box,
+        state: response[index]
+      }))
+    }));
+
+
+    // Update letter states
+    setLettersStates((prev) => {
+      let states = [...prev];
+      console.log("begin...", $word, $word.length);
+      for (let i = 0; i < $word.length; i++) {
+        const code = getCharCode($word[i]);
+        const oldState = states[code];
+        const newState = response[i];
+        if (oldState === "UNVAILABLE") states[code] = newState;
+        else if (oldState === "NOT_FOUND" || oldState === "CORRECT_SPOT") continue;
+        else if (newState === "CORRECT_SPOT") states[code] = "CORRECT_SPOT";
+      }
+      console.log("end...")
+      return states;
+    });
+    console.log("updated keyboard");
+
+    // Update the indices
     setLetterIndex(0);
     setWordIndex($wordIndex + 1);
   };
 
-  return { words, addLetter, removeLetter, submitWord }
+  return { words, addLetter, removeLetter, submitWord, letterStates }
 }
 
 const game = createRoot(createGame);

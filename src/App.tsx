@@ -1,4 +1,4 @@
-import { Component, createEffect, Show } from 'solid-js';
+import { Component, createEffect, onMount, Show } from 'solid-js';
 import Keyboard from './components/Keyboard';
 import NewPlayer from './components/NewPlayer';
 import Overlay from './components/Overlay';
@@ -6,7 +6,7 @@ import Wordle from './components/Wordle';
 import game, { isNewPlayer } from './utils/game';
 
 const App: Component = () => {
-  createEffect(() => {
+  onMount(() => {
     window.addEventListener("keydown", (e) => {
       e.preventDefault();
       if (isNewPlayer()) return;
