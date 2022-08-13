@@ -26,9 +26,6 @@ const LetterInput: Component<{ row: number, col: number }> = ({ row, col }) => {
         "animation-delay": `${delay()}s`
       }}
       class={`w-16 h-16 border-2 ${className()} flex items-center justify-center`}
-      classList={{
-        current: game.wordIndex() === row
-      }}
     >
       <span class="text-4xl font-bold">{letter()}</span>
     </div>
@@ -42,7 +39,8 @@ const Wordle = () => {
       <div 
         class={`flex mx-auto space-x-2 mb-2 text-white`}
         classList={{
-          invalid: invalid() && wordIndex() === row()
+          invalid: invalid() && wordIndex() === row(),
+          current: wordIndex() === row()
         }}
         >
         <For each={Array(LETTERS).fill(0)}>

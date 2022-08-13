@@ -2,15 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
-@keyframes flip {
+@keyframes flipCard {
   0% {
     transform: rotateX(0);
-    @apply filled;
+    @apply border-gray-300 bg-transparent;
   }
 
   45% {
     transform: rotateX(90deg);
-    @apply filled;
+    @apply border-gray-300 bg-transparent
   }
 
   55% {
@@ -29,7 +29,7 @@
 @keyframes bounce {
   0% {
     transform: scale(1);
-    @apply none;
+    @apply border-gray-500 bg-transparent;
   }
 
   50% {
@@ -38,12 +38,12 @@
 
   100% {
     transform: scale(1);
-    @apply filled;
+    @apply border-gray-300 bg-transparent
   }
 }
 
 .flipTile {
-  animation: flip 0.5s ease forwards;
+  animation: flipCard 0.5s ease forwards;
 }
 
 .none {
@@ -54,24 +54,24 @@
   @apply border-gray-300 bg-transparent;
 }
 
-.current.filled {
+.current > .filled {
   animation: bounce 0.2s ease-in-out forwards;
 }
 
 .correct-spot {
-  @apply flipTile;
+  animation: flipCard 0.5s ease forwards;
   --background-color: theme('colors.green.600');
   --border-color: theme('colors.green.600');
 }
 
 .wrong-spot {
-  @apply flipTile;
+  animation: flipCard 0.5s ease forwards;
   --background-color: theme('colors.yellow.600');
   --border-color: theme('colors.yellow.600');
 }
 
 .not-found {
-  @apply flipTile;
+  animation: flipCard 0.5s ease forwards;
   --background-color: theme('colors.gray.700');
   --border-color: theme('colors.gray.700');
 }
