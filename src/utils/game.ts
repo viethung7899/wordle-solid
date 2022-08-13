@@ -150,7 +150,7 @@ const createGame = () => {
     setWordIndex($wordIndex + 1);
   };
 
-  return { words, addLetter, removeLetter, submitWord, letterStates }
+  return { words, wordIndex, addLetter, removeLetter, submitWord, letterStates }
 }
 
 const game = createRoot(createGame);

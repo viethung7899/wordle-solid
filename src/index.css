@@ -5,12 +5,12 @@
 @keyframes flip {
   0% {
     transform: rotateX(0);
-    @apply none;
+    @apply filled;
   }
 
   45% {
     transform: rotateX(90deg);
-    @apply none;
+    @apply filled;
   }
 
   55% {
@@ -26,12 +26,36 @@
   }
 }
 
+@keyframes bounce {
+  0% {
+    transform: scale(1);
+    @apply none;
+  }
+
+  50% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    transform: scale(1);
+    @apply filled;
+  }
+}
+
 .tile {
   animation: flip 0.5s ease forwards;
 }
 
 .none {
   @apply border-2 border-gray-500;
+}
+
+.filled {
+  @apply border-2 border-gray-300;
+}
+
+.current.filled {
+  animation: bounce 0.2s ease-in-out forwards;
 }
 
 .correct-spot {
