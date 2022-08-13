@@ -1,6 +1,5 @@
 import { createRoot, createSignal } from "solid-js";
 import { displayAlert } from "../components/Alert";
-import createLocalStorageSignal from "./createLocalStorageSignal";
 import wordBank from "./word-bank";
 
 export const LETTERS = 5;
@@ -59,14 +58,23 @@ const generateAnswer = (word: string, correctWord: string) => {
   return result;
 }
 
-const [isNewPlayer, setNewPlayer] = createLocalStorageSignal("NEW_PLAYER", true);
+const [isNewPlayer, setNewPlayer] = createSignal(false);
 export { isNewPlayer, setNewPlayer };
 
 const createGame = () => {
-  const [words, setWords] = createLocalStorageSignal("WORDS", generateWords());
-  const [wordIndex, setWordIndex] = createLocalStorageSignal("WORD_INDEX", 0);
-  const [letterIndex, setLetterIndex] = createLocalStorageSignal("LETTER_INDEX", 0);
-  const [letterStates, setLettersStates] = createLocalStorageSignal("KEYBOARD_STATE", generateLetterStates());
+  const [words, setWords] = createSignal(generateWords());
+  const [wordIndex, setWordIndex] = createSignal(0);
+  const [letterIndex, setLetterIndex] = createSignal(0);
+  const [letterStates, setLettersStates] = createSignal(generateLetterStates());
+  const [invalid, setInvalid] = createSignal(false);
+
+  const setInvalidAndReset = () => {
+    clearTimeout();
+    setInvalid(true);
+    setTimeout(() => {
+      setInvalid(false);
+    }, 600);
+  }
 
   const addLetter = (letter: string) => {
     const $wordIndex = wordIndex();
@@ -116,6 +124,7 @@ const createGame = () => {
     // Not enough letters
     if ($letterIndex < $words[$wordIndex].length) {
       displayAlert("Not enough letters", 2000);
+      setInvalidAndReset();
       return;
     }
 
@@ -125,6 +134,7 @@ const createGame = () => {
     // Not in world list
     if (wordBank.findIndex(w => w === $word) < 0) {
       displayAlert("Not in word list", 2000);
+      setInvalidAndReset();;
       return;
     }
 
@@ -160,7 +170,15 @@ const createGame = () => {
     setWordIndex($wordIndex + 1);
   };
 
-  return { words, wordIndex, addLetter, removeLetter, submitWord, letterStates }
+  return {
+    words, 
+    wordIndex, 
+    addLetter, 
+    removeLetter, 
+    submitWord, 
+    letterStates,
+    invalid
+  }
 }
 
 const game = createRoot(createGame);

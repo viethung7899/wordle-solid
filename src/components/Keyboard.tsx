@@ -1,5 +1,5 @@
 import { Component, For } from "solid-js";
-import { KEYBOARD_ROWS } from "../utils/constants";
+import { ANIMATION_DELAY, KEYBOARD_ROWS, LETTERS } from "../utils/constants";
 import game, { getCharCode } from "../utils/game";
 
 const Keyboard: Component = () => {
@@ -27,6 +27,10 @@ const Keyboard: Component = () => {
         <For each={row}>
           {(key, i) => (
             <button
+              style={{
+                "transition-property": "background-color",
+                "transition-delay": `${ANIMATION_DELAY * (LETTERS + 1)}s`
+              }}
               class={`px-3 min-w-[2.5rem] py-4 rounded-md flex items-center justify-center ${style(key)} focus:outline-none`}
               onClick={handleClick(key)}>
               <strong>{key}</strong>

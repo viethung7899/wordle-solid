@@ -13,11 +13,6 @@ const LetterInput: Component<{ row: number, col: number }> = ({ row, col }) => {
     if ($state === "NOT_FOUND") return "not-found";
     return "filled";
   };
-  const current = () => {
-    const $wordIndex = game.wordIndex();
-    if ($wordIndex === row) return "current";
-    return "";
-  }
 
   const delay = () => {
     const $class = className();
@@ -30,7 +25,10 @@ const LetterInput: Component<{ row: number, col: number }> = ({ row, col }) => {
       style={{
         "animation-delay": `${delay()}s`
       }}
-      class={`w-16 h-16 border-2 ${className()} ${current()} flex items-center justify-center`}
+      class={`w-16 h-16 border-2 ${className()} flex items-center justify-center`}
+      classList={{
+        current: game.wordIndex() === row
+      }}
     >
       <span class="text-4xl font-bold">{letter()}</span>
     </div>
@@ -38,10 +36,15 @@ const LetterInput: Component<{ row: number, col: number }> = ({ row, col }) => {
 };
 
 const Wordle = () => {
-
+  const {wordIndex, invalid} = game;
   return <For each={Array(WORDS).fill(0)}>
     {(_, row) => (
-      <div class={`flex mx-auto space-x-1 mb-1 text-white`}>
+      <div 
+        class={`flex mx-auto space-x-2 mb-2 text-white`}
+        classList={{
+          invalid: invalid() && wordIndex() === row()
+        }}
+        >
         <For each={Array(LETTERS).fill(0)}>
           {(_, col) => (
             <LetterInput row={row()} col={col()} />
