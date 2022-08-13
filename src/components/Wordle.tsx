@@ -30,7 +30,7 @@ const LetterInput: Component<{ row: number, col: number }> = ({ row, col }) => {
       style={{
         "animation-delay": `${delay()}s`
       }}
-      class={`w-16 h-16 ${className()} ${current()} flex items-center justify-center`}
+      class={`w-16 h-16 border-2 ${className()} ${current()} flex items-center justify-center`}
     >
       <span class="text-4xl font-bold">{letter()}</span>
     </div>

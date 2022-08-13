@@ -1,4 +1,5 @@
-import { Component, createEffect, onMount, Show } from 'solid-js';
+import { Component, onMount, Show } from 'solid-js';
+import Alert from './components/Alert';
 import Keyboard from './components/Keyboard';
 import NewPlayer from './components/NewPlayer';
 import Overlay from './components/Overlay';
@@ -30,9 +31,10 @@ const App: Component = () => {
           <NewPlayer />
         </Overlay>
       </Show>
-      <div class="w-full h-screen bg-black text-white mx-auto max-w-10 py-10 flex flex-col items-center">
-        <h1 class="text-4xl mb-2 text-center font-bold">Wordle</h1>
+      <div class="w-full h-screen bg-black text-white mx-auto max-w-10 py-2 flex flex-col items-center">
+        <div class="text-4xl py-2 text-center font-bold border-b-2 border-gray-500 w-full">Wordle</div>
         <div class="flex flex-col gap-y-1 max-w-2xl h-full justify-between items-center">
+        <Alert />
           <div class="grow flex flex-col justify-center">
             <Wordle />
           </div>

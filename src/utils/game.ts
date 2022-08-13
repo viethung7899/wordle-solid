@@ -1,5 +1,7 @@
 import { createRoot, createSignal } from "solid-js";
+import { displayAlert } from "../components/Alert";
 import createLocalStorageSignal from "./createLocalStorageSignal";
+import wordBank from "./word-bank";
 
 export const LETTERS = 5;
 export const WORDS = 6;
@@ -61,10 +63,10 @@ const [isNewPlayer, setNewPlayer] = createLocalStorageSignal("NEW_PLAYER", true)
 export { isNewPlayer, setNewPlayer };
 
 const createGame = () => {
-  const [words, setWords] = createSignal(generateWords());
-  const [wordIndex, setWordIndex] = createSignal(0);
-  const [letterIndex, setLetterIndex] = createSignal(0);
-  const [letterStates, setLettersStates] = createSignal(generateLetterStates());
+  const [words, setWords] = createLocalStorageSignal("WORDS", generateWords());
+  const [wordIndex, setWordIndex] = createLocalStorageSignal("WORD_INDEX", 0);
+  const [letterIndex, setLetterIndex] = createLocalStorageSignal("LETTER_INDEX", 0);
+  const [letterStates, setLettersStates] = createLocalStorageSignal("KEYBOARD_STATE", generateLetterStates());
 
   const addLetter = (letter: string) => {
     const $wordIndex = wordIndex();
@@ -110,11 +112,21 @@ const createGame = () => {
     const $words = words();
     if ($wordIndex < 0 || $wordIndex >= $words.length) return;
     const $letterIndex = letterIndex();
-    if ($letterIndex < $words[$wordIndex].length) return;
+
+    // Not enough letters
+    if ($letterIndex < $words[$wordIndex].length) {
+      displayAlert("Not enough letters", 2000);
+      return;
+    }
 
     // Pull out the word
     const $word = $words[$wordIndex].map(b => b.letter.toLowerCase()).join("");
-    console.log($word);
+
+    // Not in world list
+    if (wordBank.findIndex(w => w === $word) < 0) {
+      displayAlert("Not in word list", 2000);
+      return;
+    }
 
     // Generate answer
     const response = generateAnswer($word, correctWord);
@@ -140,10 +152,8 @@ const createGame = () => {
         else if (oldState === "NOT_FOUND" || oldState === "CORRECT_SPOT") continue;
         else if (newState === "CORRECT_SPOT") states[code] = "CORRECT_SPOT";
       }
-      console.log("end...")
       return states;
     });
-    console.log("updated keyboard");
 
     // Update the indices
     setLetterIndex(0);
