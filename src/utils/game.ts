@@ -65,10 +65,10 @@ const [isNewPlayer, setNewPlayer] = createLocalStorageSignal("NEW_PLAYER", true)
 export { isNewPlayer, setNewPlayer };
 
 const createGame = () => {
-  const [words, setWords] = createSignal(generateWords());
-  const [wordIndex, setWordIndex] = createSignal(0);
-  const [letterIndex, setLetterIndex] = createSignal(0);
-  const [letterStates, setLettersStates] = createSignal(generateLetterStates());
+  const [words, setWords] = createLocalStorageSignal("WORDS", generateWords());
+  const [wordIndex, setWordIndex] = createLocalStorageSignal("WORD_INDEX", 0);
+  const [letterIndex, setLetterIndex] = createLocalStorageSignal("LETTER_INDEX", 0);
+  const [letterStates, setLettersStates] = createLocalStorageSignal("BOARD", generateLetterStates());
   const [invalid, setInvalid] = createSignal(false);
   const gameClear = createGameClearSignal();
  
