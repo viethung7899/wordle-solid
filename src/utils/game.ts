@@ -1,12 +1,13 @@
 import { createRoot, createSignal } from "solid-js";
 import { displayAlert } from "../components/Alert";
-import wordBank from "./word-bank";
+import getCorrectWord from "./word/correct";
+import wordBank from "./word/possible";
 
 export const LETTERS = 5;
 export const WORDS = 6;
 
 type _State = "NOT_FOUND" | "WRONG_SPOT" | "CORRECT_SPOT";
-export type State = "UNVAILABLE" | _State;
+export type State = "UNAVAILABLE" | _State;
 
 export const getCharCode = (letter: string) => {
   return letter.toLowerCase().charCodeAt(0) - "a".charCodeAt(0);
@@ -19,10 +20,10 @@ export type Box = {
 
 const emptyBox = (): Box => ({
   letter: "",
-  state: "UNVAILABLE"
+  state: "UNAVAILABLE"
 });
 
-const correctWord = "solid";
+const correctWord = getCorrectWord(new Date());
 
 const generateWords = () => {
   return Array(WORDS).fill(0).map(_ => {
@@ -31,7 +32,7 @@ const generateWords = () => {
 };
 
 const generateLetterStates = () => {
-  return Array(26).fill(0).map<State>(_ => "UNVAILABLE");
+  return Array(26).fill(0).map<State>(_ => "UNAVAILABLE");
 }
 
 const generateAnswer = (word: string, correctWord: string) => {
@@ -67,6 +68,7 @@ const createGame = () => {
   const [letterIndex, setLetterIndex] = createSignal(0);
   const [letterStates, setLettersStates] = createSignal(generateLetterStates());
   const [invalid, setInvalid] = createSignal(false);
+  const [found, setFound] = createSignal(false);
 
   const setInvalidAndReset = () => {
     clearTimeout();
@@ -89,7 +91,7 @@ const createGame = () => {
       return words.map((word, row) => {
         return word.map((box, col) => {
           if (row != $wordIndex || col != $letterIndex) return box;
-          return { letter, state: "UNVAILABLE" } as Box
+          return { letter, state: "UNAVAILABLE" } as Box
         })
       })
     });
@@ -108,7 +110,7 @@ const createGame = () => {
       return words.map((word, row) => {
         return word.map((box, col) => {
           if (row != $wordIndex || col != $letterIndex) return box;
-          return { letter: "", state: "UNVAILABLE" } as Box
+          return { letter: "", state: "UNAVAILABLE" } as Box
         })
       })
     });
@@ -158,7 +160,7 @@ const createGame = () => {
         const code = getCharCode($word[i]);
         const oldState = states[code];
         const newState = response[i];
-        if (oldState === "UNVAILABLE") states[code] = newState;
+        if (oldState === "UNAVAILABLE") states[code] = newState;
         else if (oldState === "NOT_FOUND" || oldState === "CORRECT_SPOT") continue;
         else if (newState === "CORRECT_SPOT") states[code] = "CORRECT_SPOT";
       }
@@ -171,13 +173,14 @@ const createGame = () => {
   };
 
   return {
-    words, 
-    wordIndex, 
-    addLetter, 
-    removeLetter, 
-    submitWord, 
+    words,
+    wordIndex,
+    addLetter,
+    removeLetter,
+    submitWord,
     letterStates,
-    invalid
+    invalid,
+    found
   }
 }
 
