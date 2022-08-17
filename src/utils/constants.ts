@@ -8,14 +8,12 @@ const KEYBOARD_ROWS = [
 
 [ALPHABET, KEYBOARD_ROWS].forEach(v => Object.freeze(v));
 
-const LETTERS = 5;
-const GUESSES = 6;
-const ANIMATION_DELAY = 0.2;
-
 export {
   ALPHABET,
   KEYBOARD_ROWS,
-  LETTERS,
-  GUESSES,
-  ANIMATION_DELAY
 }
+
+export const LETTERS = 5;
+export const GUESSES = 6;
+export const ANIMATION_DELAY = 200;
+export const KEYBOARD_TRANSITION_DELAY = ANIMATION_DELAY * (LETTERS + 1);

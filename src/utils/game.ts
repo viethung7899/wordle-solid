@@ -1,5 +1,7 @@
 import { createRoot, createSignal } from "solid-js";
 import { displayAlert } from "../components/Alert";
+import createGameClearSignal from "./signals/createGameClearSignal";
+import createLocalStorageSignal from "./signals/createLocalStorageSignal";
 import getCorrectWord from "./word/correct";
 import wordBank from "./word/possible";
 
@@ -59,7 +61,7 @@ const generateAnswer = (word: string, correctWord: string) => {
   return result;
 }
 
-const [isNewPlayer, setNewPlayer] = createSignal(false);
+const [isNewPlayer, setNewPlayer] = createLocalStorageSignal("NEW_PLAYER", true);
 export { isNewPlayer, setNewPlayer };
 
 const createGame = () => {
@@ -68,8 +70,8 @@ const createGame = () => {
   const [letterIndex, setLetterIndex] = createSignal(0);
   const [letterStates, setLettersStates] = createSignal(generateLetterStates());
   const [invalid, setInvalid] = createSignal(false);
-  const [found, setFound] = createSignal(false);
-
+  const gameClear = createGameClearSignal();
+ 
   const setInvalidAndReset = () => {
     clearTimeout();
     setInvalid(true);
@@ -167,9 +169,20 @@ const createGame = () => {
       return states;
     });
 
+    // Check if game clear
+    if (response.every((state) => state === "CORRECT_SPOT")) {
+      displayAlert("Great!");
+      gameClear.clearRow($wordIndex);
+    }
+
     // Update the indices
     setLetterIndex(0);
     setWordIndex($wordIndex + 1);
+
+    // Check game over
+    if ($wordIndex + 1 >= WORDS) {
+      displayAlert(correctWord.toUpperCase());
+    }
   };
 
   return {
@@ -180,7 +193,7 @@ const createGame = () => {
     submitWord,
     letterStates,
     invalid,
-    found
+    gameClear
   }
 }
 

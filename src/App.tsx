@@ -7,20 +7,16 @@ import Wordle from './components/Wordle';
 import game, { isNewPlayer } from './utils/game';
 
 const App: Component = () => {
+  const {gameClear, addLetter, removeLetter, submitWord } = game;
+
   onMount(() => {
     window.addEventListener("keydown", (e) => {
+      if (gameClear.row() >= 0 || isNewPlayer()) return;
       e.preventDefault();
       if (isNewPlayer()) return;
-      if (/[a-zA-Z]/g.test(e.key) && e.key.length === 1) {
-        game.addLetter(e.key);
-        return;
-      }
-      if (e.key === "Backspace") {
-        game.removeLetter();
-      }
-      if (e.key === "Enter") {
-        game.submitWord();
-      }
+      if (/[a-zA-Z]/g.test(e.key) && e.key.length === 1) addLetter(e.key);
+      if (e.key === "Backspace") removeLetter();
+      if (e.key === "Enter") submitWord();
     });
   });
 
@@ -34,7 +30,7 @@ const App: Component = () => {
       <div class="w-full h-screen bg-black text-white mx-auto max-w-10 py-2 flex flex-col items-center">
         <div class="text-4xl py-2 text-center font-bold border-b-2 border-gray-500 w-full">Wordle</div>
         <div class="flex flex-col gap-y-1 max-w-2xl h-full justify-between items-center">
-        <Alert />
+          <Alert />
           <div class="grow flex flex-col justify-center">
             <Wordle />
           </div>

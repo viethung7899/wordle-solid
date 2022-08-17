@@ -5,13 +5,18 @@ const createLocalStorageSignal = <T>(key: string, defaultValue: T) => {
     ? JSON.parse(localStorage.getItem(key)) as T
     : defaultValue;
   const [value, setValue] = createSignal(initialValue);
-  const setValueAndStore = ((arg) => {
+  
+  const setValueAndStore = (persist: boolean = true) => (arg) => {
     const v = setValue(arg);
-    localStorage.setItem(key, JSON.stringify(v));
+    if (persist) localStorage.setItem(key, JSON.stringify(v));
     return v;
-  }) as typeof setValue;
+  };
 
-  return [value, setValueAndStore as Setter<T>] as const;
+  return [
+    value, 
+    setValueAndStore() as Setter<T>, // Persist value
+    setValueAndStore(false) as Setter<T> // Only set value
+  ] as const;
 }
 
 export default createLocalStorageSignal;

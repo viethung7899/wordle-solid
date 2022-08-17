@@ -1,14 +1,16 @@
-import { createSignal, Show } from "solid-js";
+import { Show } from "solid-js";
+import createLocalStorageSignal from "../utils/signals/createLocalStorageSignal";
 
-const [alertMessage, setAlertMessage] = createSignal("");
-let timer: number;
+const [alertMessage, persistAlertMessage, setAlertMessage] = createLocalStorageSignal("ALERT_MESSAGE", "");
 
-export const displayAlert = (message: string, duration: number) => {
-  setAlertMessage(message);
-  if (timer) clearTimeout(timer);
-  timer = setTimeout(() => {
-    setAlertMessage("");
-  }, duration);
+export const displayAlert = (message: string, duration?: number) => {
+  clearTimeout();
+  if (duration) {
+    setAlertMessage(message);
+    setTimeout(() => setAlertMessage(""), duration);
+  } else {
+    persistAlertMessage(message);
+  }
 }
 
 const Alert = () => {

@@ -58,6 +58,11 @@
   animation: bounce 0.2s ease-in-out forwards;
 }
 
+.clear > div {
+  animation: jiggle 800ms ease-in-out forwards;
+  @apply bg-green-600 border-green-600;
+}
+
 .correct-spot {
   animation: flipCard 0.5s ease forwards;
   --background-color: theme('colors.green.600');
@@ -108,4 +113,11 @@
 
 .invalid {
   animation: shake 600ms;
+}
+
+@keyframes jiggle {
+  0% { transform: translateY(0); }
+  25% { transform: translateY(-1rem); }
+  75% { transform: translateY(1rem); }
+  100% { transform: translateY(0); }
 }
