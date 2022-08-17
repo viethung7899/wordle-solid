@@ -64,6 +64,9 @@ const NewPlayer = () => {
       </div>
     </div>
     <p>The letter <strong>U</strong> is not in the word in any spot</p>
+
+    <hr class="my-2 border-gray-100 border-[0.5px]" />
+    <p class="font-bold">A new WORDLE will be available each day!</p>
   </div>
 };
 
