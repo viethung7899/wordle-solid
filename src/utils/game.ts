@@ -2,8 +2,8 @@ import { createRoot, createSignal } from "solid-js";
 import { displayAlert } from "../components/Alert";
 import createGameClearSignal from "./signals/createGameClearSignal";
 import createLocalStorageSignal from "./signals/createLocalStorageSignal";
-import getCorrectWord from "./word/correct";
 import wordBank from "./word/possible";
+import { getTodayWord } from "./word/today";
 
 export const LETTERS = 5;
 export const WORDS = 6;
@@ -25,7 +25,7 @@ const emptyBox = (): Box => ({
   state: "UNAVAILABLE"
 });
 
-const correctWord = getCorrectWord(new Date());
+const correctWord = getTodayWord();
 
 const generateWords = () => {
   return Array(WORDS).fill(0).map(_ => {
@@ -71,7 +71,7 @@ const createGame = () => {
   const [letterStates, setLettersStates] = createLocalStorageSignal("BOARD", generateLetterStates());
   const [invalid, setInvalid] = createSignal(false);
   const gameClear = createGameClearSignal();
- 
+
   const setInvalidAndReset = () => {
     clearTimeout();
     setInvalid(true);
@@ -185,6 +185,14 @@ const createGame = () => {
     }
   };
 
+  const reset = () => {
+    setWords(generateWords());
+    setWordIndex(0);
+    setLetterIndex(0);
+    setLettersStates(generateLetterStates());
+    displayAlert("");
+  };
+
   return {
     words,
     wordIndex,
@@ -193,7 +201,8 @@ const createGame = () => {
     submitWord,
     letterStates,
     invalid,
-    gameClear
+    gameClear,
+    reset
   }
 }
 

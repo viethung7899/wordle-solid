@@ -5,9 +5,17 @@ import NewPlayer from './components/NewPlayer';
 import Overlay from './components/Overlay';
 import Wordle from './components/Wordle';
 import game, { isNewPlayer } from './utils/game';
+import { isDifferentDate, saveToday } from './utils/word/today';
 
 const App: Component = () => {
   const {gameClear, addLetter, removeLetter, submitWord } = game;
+
+  onMount(() => {
+    if (isDifferentDate()) {
+      game.reset();
+    }
+    saveToday();
+  })
 
   onMount(() => {
     window.addEventListener("keydown", (e) => {
