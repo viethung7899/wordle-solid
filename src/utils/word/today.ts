@@ -1,11 +1,14 @@
 import wordBank from "./possible";
 
 const today = new Date();
+const YEAR_FACTOR = +import.meta.env.VITE_YEAR;
+const MONTH_FACTOR = +import.meta.env.VITE_MONTH;
+const DATE_FACTOR = +import.meta.env.VITE_DATE;
 
 export const getTodayWord = () => {
-  const rand = today.getFullYear() * 15667 + today.getMonth() * 70843 + today.getDate() * 15667;
+  const rand = today.getFullYear() * YEAR_FACTOR + today.getMonth() * MONTH_FACTOR + today.getDate() * DATE_FACTOR;
   const word = wordBank[rand % wordBank.length];
-  console.log(word);
+  if (import.meta.env.DEV) console.log(word);
   return word;
 };
 
