@@ -1,10 +1,10 @@
-# [Wordle-Solid](https://wordle-solid.netlify.app)
+# [Wordle-Solid](https://wordle-solid.vercel.app)
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/2d8a0c89-5190-4e17-bf1d-8168c39513fb/deploy-status)](https://app.netlify.com/sites/wordle-solid/deploys)
+A clone of a popular game [Wordle](https://www.nytimes.com/games/wordle/index.html), built with [Solid](https://www.solidjs.com/) and [Tailwind](https://tailwindcss.com/)
 
-This is a clone of a popular game [Wordle](https://www.nytimes.com/games/wordle/index.html) built with [Solid](https://www.solidjs.com/) and [TailwindCSS](https://tailwindcss.com/)
+Please visit the website [here](https://wordle-solid.vercel.app)
 
-Please visit thee website [here](https://wordle-solid.netlify.app)
+![wordle](images/wordle.png)
 
 ## Developers' guide
 
